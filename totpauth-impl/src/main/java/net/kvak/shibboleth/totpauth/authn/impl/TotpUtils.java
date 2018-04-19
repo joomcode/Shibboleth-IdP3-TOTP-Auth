@@ -1,9 +1,7 @@
 package net.kvak.shibboleth.totpauth.authn.impl;
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +11,8 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.AbstractContextMapper;
 import org.springframework.ldap.filter.EqualsFilter;
 
-import com.warrenstrange.googleauth.GoogleAuthenticator;
-
-import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty;
+import javax.annotation.Nonnull;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class TotpUtils {
@@ -59,6 +56,9 @@ public class TotpUtils {
 				return ctx.getDn().toString();
 			}
 		});
+
+
+
 		if (result.size() == 1) {
 			log.debug("{} User {} relative DN is: {}", username, (String) result.get(0));
 			dn = (String) result.get(0);

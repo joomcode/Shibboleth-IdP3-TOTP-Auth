@@ -2,6 +2,8 @@
 .classpath
 .project
 .settings/
+# Intellij
+.idea
 
 # Mac
 .DS_Store
@@ -13,3 +15,6 @@ target/
 # Java
 .class
 .jar
+
+# Maven IML
+*.iml

@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.KeyRepresentation;
+import com.warrenstrange.googleauth.GoogleAuthenticatorConfig;
 
 import net.kvak.shibboleth.totpauth.api.authn.SeedFetcher;
 import net.kvak.shibboleth.totpauth.api.authn.TokenValidator;
@@ -81,7 +83,11 @@ public class TotpTokenValidator extends AbstractValidationAction implements Toke
 		log.debug("{} Entering totpvalidator", getLogPrefix());
 
 		try {
-
+			GoogleAuthenticatorConfig.GoogleAuthenticatorConfigBuilder gAuthConfig =
+					new GoogleAuthenticatorConfig.GoogleAuthenticatorConfigBuilder()
+							.setKeyRepresentation(KeyRepresentation.BASE64);
+			GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator(gAuthConfig.build());
+			this.setgAuth(googleAuthenticator);
 			TokenUserContext tokenCtx = authenticationContext.getSubcontext(TokenUserContext.class, true);
 			upCtx = authenticationContext.getSubcontext(UsernamePasswordContext.class, true);
 
@@ -93,6 +99,7 @@ public class TotpTokenValidator extends AbstractValidationAction implements Toke
 				
 				/* Get seeds from tokenUserContext */
 				ArrayList<String> seeds = tokenCtx.getTokenSeed();
+				log.debug("seeds are: ", seeds.toString());
 
 				/* Iterate over seeds and try to validate them */
 				Iterator<String> it = seeds.iterator();
@@ -133,13 +140,10 @@ public class TotpTokenValidator extends AbstractValidationAction implements Toke
 	@Override
 	public boolean validateToken(String seed, int token) {
 		log.debug("{} Entering validatetoken", getLogPrefix());
-
-		if (seed.length() == 16) {
-			log.debug("{} authorize {} - {} ", getLogPrefix(), seed, token);
-			return gAuth.authorize(seed, token);
-		}
-		log.debug("{} Token code validation failed. Seed is not 16 char long", getLogPrefix());
-		return false;
+        log.debug("{} authorize {} - {}  ", getLogPrefix(), seed, token);
+        return gAuth.authorize(seed, token);
+//		log.debug("{} Token code validation failed. Seed is not 16 char long", getLogPrefix());
+//		return false;
 	}
 
 	@Override
